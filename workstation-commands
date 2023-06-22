@@ -1,0 +1,47 @@
+Installation and demo of Red Hat Service Mesh on OpenShift
+https://github.com/Adhiadarsh/openshift-servicemesh
+
+We need to install 4 Operators - from the OpenShift Operator Hub. Navigate to the OpenShift Operator Hub:
+1.Elasticsearch
+2.Jaeger - for distributed tracing
+3.Kiali - for Service Mesh topology visualisation
+4.Red Hat OpenShift Service Mesh Operator
+
+
+create 2 namespace inside service mesh
+1. for control plan
+2.project
+
+1.oc project istio-system
+  ---> create control plane ---- bookinfo
+  --->create member role ------istio-system
+  
+2. oc project bookinfo
+--> without sidecar
+oc apply -f https://raw.githubusercontent.com/istio/istio/release-1.3/samples/bookinfo/platform/kube/bookinfo.yaml
+
+--->with sidecar
+oc apply -n bookinfo -f https://raw.githubusercontent.com/Maistra/bookinfo/maistra-1.0/bookinfo.yaml
+
+--->gateway
+oc apply -n bookinfo -f https://raw.githubusercontent.com/Maistra/bookinfo/maistra-1.0/bookinfo-gateway.yaml
+
+--->destination
+oc apply -n bookinfo -f https://raw.githubusercontent.com/istio/istio/release-1.1/samples/bookinfo/networking/destination-rule-all.yaml
+
+control plane 
+--->export GATEWAY_URL=$(oc -n istio-system get route istio-ingressgateway -o jsonpath='{.spec.host}')
+echo $GATEWAY_URL
+
+
+url/productpage
+
+
+If we refresh this page several times we can see that it loops through the Review Microservice versions - showing
+
+black stars
+no stars
+red stars
+
+
+
